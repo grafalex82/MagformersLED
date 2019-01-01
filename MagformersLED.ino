@@ -12,7 +12,7 @@
 // Power Enabled pin
 #define POWER_EN_PIN 1
 // Max brightness (dimming the light for debugging)
-#define MAX_VAL 127
+#define MAX_VAL 250
 
 #define ARRAY_SIZE(a) sizeof(a)/sizeof(a[0])
 
@@ -397,6 +397,18 @@ void blinkLed()
     }
 }
 
+// List of pointers to functions that serve different modes
+void (*Modes[])() = 
+{
+    rainbow,
+    slidingRainbow,
+    orangeBeacon,
+    policeBeacon,
+    trafficLights,
+    stars,
+    randomColorsFadeInOut
+};
+
 void loop()
 {
     static uint8_t mode = eeprom_read_byte( (uint8_t*) 10 );
@@ -410,7 +422,7 @@ void loop()
         if(digitalRead(BUTTON_PIN) == HIGH)
         {
             mode++;
-            mode %= 7; // num modes
+            mode %= ARRAY_SIZE(Modes); // num modes
             
             clearPixels();
             ws2811.sendLedData();
@@ -433,36 +445,13 @@ void loop()
     if(digitalRead(BUTTON_PIN) == LOW && waitingForBtnUp)
         waitingForBtnUp = false;
 
-    // Mode display
-    switch(mode)
-    {
-    case 0:
-        rainbow();
-        break;
-    case 1:
-        slidingRainbow();
-        break;
-    case 2:
-        orangeBeacon();
-        break;
-    case 3:
-    	policeBeacon();
-        break;
-    case 4:
-        trafficLights();
-        break;
-    case 5:
-        stars();
-        break;
-    case 6:
-        randomColorsFadeInOut();
-        break;
-    default:
-        break;
-    }
+    // display LEDs according to current mode
+    Modes[mode]();
 
+    // pong shutdown timer
     shutdownOnTimeOut();
 
+    // Yes, we still alive
     wdt_reset();
 }
 
