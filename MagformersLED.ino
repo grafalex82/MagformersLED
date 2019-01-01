@@ -174,7 +174,6 @@ void policeBeacon()
     static uint8_t pos = 0;
     pos += 2;
     
-    const int delta = 70;
     for (int led = 0; led < ARRAY_SIZE(policeLEDIndexes); led++)
     {
         int ledPos = led*255/ARRAY_SIZE(policeLEDIndexes);
@@ -202,19 +201,15 @@ void clearPixels()
 
 void redTrafficLights()
 {
-    setRgb(0, MAX_VAL, 0, 0);
-    setRgb(1, MAX_VAL, 0, 0);
-    setRgb(2, MAX_VAL, 0, 0);
-    setRgb(3, MAX_VAL, 0, 0);
+    for(int i=0; i<4; i++)
+        setRgb(i, MAX_VAL, 0, 0);
     ws2811.sendLedData();
 }
 
 void yellowTrafficLights()
 {
-    setRgb(4, MAX_VAL, MAX_VAL, 0);
-    setRgb(5, MAX_VAL, MAX_VAL, 0);
-    setRgb(6, MAX_VAL, MAX_VAL, 0);
-    setRgb(7, MAX_VAL, MAX_VAL, 0);
+    for(int i=4; i<8; i++)
+        setRgb(i, MAX_VAL, MAX_VAL, 0);
     ws2811.sendLedData();
 }
 
