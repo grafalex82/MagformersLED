@@ -151,13 +151,15 @@ int brightnessByPos(int pos, int ledPos, int delta)
 
 void orangeBeacon()
 {
+    const int ORANGE_HUE = 17;
+
     static uint8_t pos = 0;
     pos+=3;
     
     for (int led = 0; led < ARRAY_SIZE(circleLEDIndexes); led++)
     {
         int brightness = brightnessByPos(pos, led*255/ARRAY_SIZE(circleLEDIndexes), 70);
-        setHue(circleLEDIndexes[led], 17, brightness); //17 is an orange color hue
+        setHue(circleLEDIndexes[led], ORANGE_HUE, brightness);
     }
    
     ws2811.sendLedData();
@@ -166,6 +168,9 @@ void orangeBeacon()
 
 void policeBeacon()
 {
+    const int RED_HUE = 0;
+    const int BLUE_HUE = 170;
+    
     static uint8_t pos = 0;
     pos += 2;
     
@@ -174,12 +179,12 @@ void policeBeacon()
     {
         int ledPos = led*255/ARRAY_SIZE(policeLEDIndexes);
         int brightness = brightnessByPos(pos, ledPos, 50);
-        setHue(policeLEDIndexes[led], 0, brightness);
+        setHue(policeLEDIndexes[led], RED_HUE, brightness);
 
         if(brightness == 0)
         {
             brightness = brightnessByPos((pos+100) % 256, ledPos, 50);
-            setHue(policeLEDIndexes[led], 170, brightness);
+            setHue(policeLEDIndexes[led], BLUE_HUE, brightness);
         }
     }
    
